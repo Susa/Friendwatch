@@ -206,6 +206,7 @@ export const routerMiddleware = createReactNavigationReduxMiddleware(
   'root',
   state => state.router
 )
+
 const addListener = createReduxBoundAddListener('root')
 
 @connect(({ app, router }) => ({ app, router }))
