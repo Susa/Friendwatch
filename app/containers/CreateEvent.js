@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { FlatList, View, TouchableOpacity } from 'react-native'
 import DatePicker from 'react-native-datepicker'
 import { connect } from 'react-redux'
-import { Form, Item, Label, Input, ListItem, Body, Text, Button, Icon } from 'native-base'
+import { Form, Item, Label, Input, ListItem, Body, Text, Button, Icon, Right } from 'native-base'
 import { CustomCard, Layout } from '../components'
 import { navigateTo } from '../components/Commons/CustomRouteActions'
 import { createForm } from 'rc-form'
@@ -155,6 +155,9 @@ class CreateEvent extends Component {
       <Body>
         <Text>{item.fullname}</Text>
       </Body>
+      <Right>
+        {this.checkInvitation(item)}
+      </Right>
     </ListItem>
   )
 
@@ -163,7 +166,7 @@ class CreateEvent extends Component {
 
     return (
       <Layout bottomButton={this.onEventSave} bottomButtonText="Create Event">
-        <CustomCard header="Fill up friendwatch details" footer>
+        <CustomCard header="Fill up friendwatch details" footer style={{ backgroundColor: 'white' }}>
           <Form>
             <Item stackedLabel>
               <Label>What is the event?</Label>
@@ -245,10 +248,9 @@ class CreateEvent extends Component {
             </Item>
           </Form>
         </CustomCard>
-        <CustomCard header="Select friends to watch you">
+        <CustomCard header="Select friends to watch you" style={{ backgroundColor: 'white' }}>
           <FlatList
             data={this.props.users.records}
-            extraData={this.checkInvitation(data)}
             keyExtractor={this._keyExtractor}
             renderItem={this._renderItem}
           />
