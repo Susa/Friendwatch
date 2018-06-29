@@ -58,6 +58,14 @@ class MyProfile extends Component {
     )
   }
 
+  updatePhoto = () => {
+    navigateTo(this.props.navigation, 'TakePhoto', { 
+        user: this.props.users.activeRecord, 
+        refresh: () => this.getUser(this.props.navigation.state.params.user_id)
+      }
+    )
+  }
+
   initialUser = () => {
     
   }
@@ -143,7 +151,7 @@ class MyProfile extends Component {
             <View style={{ flexDirection: 'row' }}>
               <View style={{ flex: 0.3, alignItems: 'flex-start', justifyContent: 'center' }}>
                 {
-                  this.state.isOwner ? <TouchableOpacity onPress={() => this.editProfileClick()}>
+                  this.state.isOwner ? <TouchableOpacity onPress={() => this.updatePhoto()}>
                   <Icon
                     type="Feather"
                     name="camera"

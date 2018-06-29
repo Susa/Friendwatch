@@ -139,7 +139,7 @@ class UpdateUser extends Component {
                 onChangeText={val => this.handleChange('fullname', val)}
               />
             </Item>
-            <Item floatingLabel>
+            {/* <Item floatingLabel>
               <Label>Email Address</Label>
               <Input
                 autoCapitalize='none'
@@ -148,7 +148,7 @@ class UpdateUser extends Component {
                 })}
                 onChangeText={val => this.handleChange('email', val)}
               />
-            </Item>
+            </Item> */}
 
             <Item floatingLabel>
               <Label>Contact No</Label>

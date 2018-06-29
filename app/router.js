@@ -20,6 +20,7 @@ import Login from './containers/Login'
 import RegisterUser from './containers/RegisterUser'
 import Home from './containers/Home'
 import MyProfile from './containers/MyProfile'
+import MyProfileTakePhoto from './containers/MyProfileTakePhoto'
 import UsersList from './containers/UsersList'
 import UpdateUser from './containers/UpdateUser'
 import MapScreenFullView from './containers/MapScreenFullView'
@@ -124,6 +125,11 @@ const MainNavigator = StackNavigator(
       screen: MyProfile,
       navigationOptions: ({ navigation, screenProps }) =>
         CustomTitleBar.standard({navigation,screenProps}, 'User Profile'),
+    },
+    TakePhoto: {
+      screen: MyProfileTakePhoto,
+      navigationOptions: ({ navigation, screenProps }) =>
+        CustomTitleBar.standard({navigation,screenProps}, 'Take Photo')
     },
     EventDetails: {
       screen: EventDetails,
