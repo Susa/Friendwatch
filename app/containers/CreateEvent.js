@@ -3,13 +3,14 @@ import { FlatList, View, TouchableOpacity } from 'react-native'
 import DatePicker from 'react-native-datepicker'
 import { connect } from 'react-redux'
 import { Form, Item, Label, Input, ListItem, Body, Text, Button, Icon, Right } from 'native-base'
-import { CustomCard, Layout } from '../components'
+import { CustomCard, Layout, ValidationText } from '../components'
 import { navigateTo } from '../components/Commons/CustomRouteActions'
 import { createForm } from 'rc-form'
 import _ from 'lodash'
 import moment from 'moment'
 import Realm from '../utils/RealmStore'
 import RNGooglePlaces from 'react-native-google-places'
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 
 let auth = Realm.objects('Auth');
 
@@ -27,18 +28,19 @@ class CreateEvent extends Component {
       time: currentTime,
       invited: [],
       eventLocation: 'Select Event Location',
-      eventLocationDetails: ''
+      eventLocationDetails: '',
+      eventCoordinate: {},
+      eventRegion: {}
     }
   }
 
   _keyExtractor = (item, index) => item.id.toString()
 
   eventLocationModal() {
-    RNGooglePlaces.openPlacePickerModal()
+    RNGooglePlaces.openAutocompleteModal()
     .then((place) => {
-
-      //if(_.isEmpty(place.address))
-      //  console.log('Address is Empty')
+      if(_.isEmpty(place.address))
+       console.log('Address is Empty')
 
 		  this.setState({ eventLocation: place.address, eventLocationDetails: place })
     })
@@ -161,21 +163,44 @@ class CreateEvent extends Component {
     </ListItem>
   )
 
+  onPointMapClose = (coordinate) => {
+    this.setState({
+      eventCoordinate: coordinate,
+      region: {
+        latitude: coordinate.latitude,
+        longitude: coordinate.longitude,
+        latitudeDelta: 0.02,
+        longitudeDelta: 0.02
+      }
+    }, () => console.log(this.state))
+  }
+
+  pointMap = () => {
+    navigateTo(this.props.navigation, 'MapScreenPointOut', { onClose: this.onPointMapClose })
+  }
+
   render() {
     const { getFieldProps } = this.props.form
 
     return (
-      <Layout bottomButton={this.onEventSave} bottomButtonText="Create Event">
+      <Layout>
         <CustomCard header="Fill up friendwatch details" footer style={{ backgroundColor: 'white' }}>
           <Form>
             <Item stackedLabel>
               <Label>What is the event?</Label>
               <Input
-                {...getFieldProps('title')}
-                placeholder="Title of event"
-                onChangeText={val => this.handleChange('title', val)}
+                {...getFieldProps('title', {
+                  rules: [{
+                    required: true,
+                    message: 'Event title is required',
+                  }]
+                }
+              )}
+              placeholder="Title of the event"
+              onChangeText={val => this.handleChange('title', val)}
               />
             </Item>
+            <ValidationText {...this.props} field='title' />
             <Item stackedLabel>
               <Label>More event details</Label>
               <Input
@@ -242,11 +267,35 @@ class CreateEvent extends Component {
             <Item stackedLabel style={{ alignItems: 'flex-start' }}>
             <TouchableOpacity onPress={() => this.eventLocationModal()}>
               <Label>Specify Event Location</Label>
-              
                 <Text style={{ fontSize: 18, marginTop: 10, marginBottom: 30, alignSelf: 'flex-start' }}>{this.state.eventLocation}</Text>
               </TouchableOpacity>
             </Item>
           </Form>
+        </CustomCard>
+        <CustomCard header="Point out exact map location" style={{ backgroundColor: 'white' }}>
+            <Button onPress={this.pointMap}>
+                <Text>Point Out In Map</Text>
+
+                {
+                  !_.isEmpty(this.state.eventCoordinate) ? 
+                  <MapView
+                    style={{ height: 100, width: 100 }}
+                    provider={PROVIDER_GOOGLE}
+                    region={this.state.region}
+                    mapType={'hybrid'}
+                    >
+
+                    <Marker
+                      title={'Marker Here'}
+                      key={'MarkerKey'}
+                      coordinate={this.state.eventCoordinate}
+                    />
+
+                  </MapView> : null
+                }
+                
+
+            </Button>
         </CustomCard>
         <CustomCard header="Select friends to watch you" style={{ backgroundColor: 'white' }}>
           <FlatList
@@ -255,6 +304,9 @@ class CreateEvent extends Component {
             renderItem={this._renderItem}
           />
         </CustomCard>
+
+        <Button primary onPress={this.onEventSave}><Text> Create Event </Text></Button>
+
       </Layout>
     )
   }

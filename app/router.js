@@ -24,6 +24,7 @@ import MyProfileTakePhoto from './containers/MyProfileTakePhoto'
 import UsersList from './containers/UsersList'
 import UpdateUser from './containers/UpdateUser'
 import MapScreenFullView from './containers/MapScreenFullView'
+import MapScreenPointOut from './containers/MapScreenPointOut'
 import Events from './containers/Events'
 import CreateEvent from './containers/CreateEvent'
 import Invitation from './containers/Invitation'
@@ -140,6 +141,11 @@ const MainNavigator = StackNavigator(
       screen: MapScreenFullView,
       navigationOptions: ({ navigation, screenProps }) =>
         CustomTitleBar.standard({navigation,screenProps}, 'MapScreenFullView'),
+    },
+    MapScreenPointOut: {
+      screen: MapScreenPointOut,
+      navigationOptions: ({ navigation, screenProps }) =>
+        CustomTitleBar.standard({navigation,screenProps}, 'MapScreenPointOut'),
     },
   },
   {
