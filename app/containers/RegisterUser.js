@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, ActivityIndicator, StatusBar, TouchableOpacity } from 'react-native'
+import { Text, ActivityIndicator, StatusBar, TouchableOpacity, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
 
 import {
@@ -18,11 +18,14 @@ import {
 } from 'native-base'
 import { NavigationActions } from '../utils'
 import { computeSize } from '../utils/DeviceRatio'
-import { resetNavigateTo, backAction, newNavigate } from '../components/Commons/CustomRouteActions'
+import { resetNavigateTo, backAction, navigateTo } from '../components/Commons/CustomRouteActions'
 import { CustomCard, Layout, ValidationText } from '../components'
 
 import { createForm } from 'rc-form'
 import RNGooglePlaces from 'react-native-google-places'
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+
+const { width, height } = Dimensions.get('window')
 
 @connect(({ auth }) => ({ ...auth }))
 class RegisterUser extends Component {
@@ -31,11 +34,13 @@ class RegisterUser extends Component {
     currentHome: 'Home Location',
     currentSaved: 'Saved Location',
     currentHomeDetails: '',
-    currentSavedDetails: ''
+    currentSavedDetails: '',
+    currentSavedCoordinate: {}
+
   }
   
   homeLocationModal() {
-    RNGooglePlaces.openPlacePickerModal()
+    RNGooglePlaces.openAutocompleteModal()
     .then((place) => {
 		  this.setState({ currentHome: place.address, currentHomeDetails: place })
     })
@@ -43,9 +48,22 @@ class RegisterUser extends Component {
   }
 
   savedLocationModal() {
-    RNGooglePlaces.openPlacePickerModal()
+    RNGooglePlaces.openAutocompleteModal()
     .then((place) => {
-		  this.setState({ currentSaved: place.address, currentSavedDetails: place })
+		  this.setState({ 
+        currentSaved: place.address, 
+        currentSavedDetails: place, 
+        currentSavedCoordinate: {
+          longitude: place.longitude,
+          latitude: place.latitude
+        },
+        region: {
+          latitude: place.latitude,
+          longitude: place.longitude,
+          latitudeDelta: 0.02,
+          longitudeDelta: 0.02
+        }
+      })
     })
     .catch(error => console.log(error.message))
   }
@@ -113,6 +131,22 @@ class RegisterUser extends Component {
 
   selectLocationChange = (details) => {
     //console.log(details)
+  }
+
+  onPointMapClose = (coordinate) => {
+    this.setState({
+      currentSavedCoordinate: coordinate,
+      region: {
+        latitude: coordinate.latitude,
+        longitude: coordinate.longitude,
+        latitudeDelta: 0.02,
+        longitudeDelta: 0.02
+      }
+    }, () => console.log(this.state))
+  }
+
+  pointMap = () => {
+    navigateTo(this.props.navigation, 'MapScreenPointOut', { onClose: this.onPointMapClose })
   }
 
   render() {
@@ -209,20 +243,44 @@ class RegisterUser extends Component {
               />
             </Item>
             
-            <Item stackedLabel style={{ alignItems: 'flex-start' }}>
+            {/* <Item stackedLabel style={{ alignItems: 'flex-start' }}>
               <Label>Home Location</Label>
               <TouchableOpacity onPress={() => this.homeLocationModal()}>
                 <Text style={{ fontSize: 18, marginTop: 10, marginBottom: 30, alignSelf: 'flex-start' }}>{this.state.currentHome}</Text>
               </TouchableOpacity>
-            </Item>
+            </Item> */}
             
             <Item stackedLabel style={{ alignItems: 'flex-start' }}>
               <Label>Saved Location</Label>
               <TouchableOpacity onPress={() => this.savedLocationModal()}>
-                <Text style={{ fontSize: 18, marginTop: 10, marginBottom: 30, alignSelf: 'flex-start' }}>{this.state.currentSaved}</Text>
+                <Text style={{ fontSize: 18, marginTop: 10, marginBottom: 10, alignSelf: 'flex-start' }}>{this.state.currentSaved}</Text>
               </TouchableOpacity>
             </Item>
-          
+            
+            {
+              !_.isEmpty(this.state.currentSavedCoordinate) ? 
+
+              <Item stackedLabel style={{ alignItems: 'flex-start' }}>
+                <TouchableOpacity onPress={this.pointMap}>
+                  <Label>Point out map location</Label> 
+                  <MapView
+                    style={{ height: 100, width: width - 80, marginTop: 15 }}
+                    provider={PROVIDER_GOOGLE}
+                    region={this.state.region}
+                    mapType={'hybrid'}
+                    >
+
+                    <Marker
+                      title={'Marker Here'}
+                      key={'MarkerKey'}
+                      coordinate={this.state.currentSavedCoordinate}
+                    />
+                  </MapView> 
+                </TouchableOpacity>
+              </Item>
+              : null
+            }
+
           </Form>
         </CustomCard>
         

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { FlatList, View, TouchableOpacity } from 'react-native'
+import { FlatList, TouchableOpacity, Dimensions } from 'react-native'
 import DatePicker from 'react-native-datepicker'
 import { connect } from 'react-redux'
 import { Form, Item, Label, Input, ListItem, Body, Text, Button, Icon, Right } from 'native-base'
@@ -11,6 +11,8 @@ import moment from 'moment'
 import Realm from '../utils/RealmStore'
 import RNGooglePlaces from 'react-native-google-places'
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+
+const { width, height } = Dimensions.get('window')
 
 let auth = Realm.objects('Auth');
 
@@ -39,10 +41,22 @@ class CreateEvent extends Component {
   eventLocationModal() {
     RNGooglePlaces.openAutocompleteModal()
     .then((place) => {
-      if(_.isEmpty(place.address))
-       console.log('Address is Empty')
+      
+      this.setState({ 
+        eventLocation: place.address, 
+        eventLocationDetails: place, 
+        eventCoordinate: {
+          longitude: place.longitude,
+          latitude: place.latitude
+        },
+        region: {
+          latitude: place.latitude,
+          longitude: place.longitude,
+          latitudeDelta: 0.02,
+          longitudeDelta: 0.02
+        }
+      })
 
-		  this.setState({ eventLocation: place.address, eventLocationDetails: place })
     })
     .catch(error => console.log(error.message))
   }
@@ -265,21 +279,19 @@ class CreateEvent extends Component {
               />
             </Item>
             <Item stackedLabel style={{ alignItems: 'flex-start' }}>
-            <TouchableOpacity onPress={() => this.eventLocationModal()}>
-              <Label>Specify Event Location</Label>
-                <Text style={{ fontSize: 18, marginTop: 10, marginBottom: 30, alignSelf: 'flex-start' }}>{this.state.eventLocation}</Text>
+              <TouchableOpacity onPress={() => this.eventLocationModal()}>
+                <Label>Specify Event Location</Label> 
+                <Text style={{ fontSize: 18, marginTop: 10, marginBottom: 10, alignSelf: 'flex-start' }}>{this.state.eventLocation}</Text>
               </TouchableOpacity>
             </Item>
-          </Form>
-        </CustomCard>
-        <CustomCard header="Point out exact map location" style={{ backgroundColor: 'white' }}>
-            <Button onPress={this.pointMap}>
-                <Text>Point Out In Map</Text>
+            {
+              !_.isEmpty(this.state.eventCoordinate) ? 
 
-                {
-                  !_.isEmpty(this.state.eventCoordinate) ? 
+              <Item stackedLabel style={{ alignItems: 'flex-start' }}>
+                <TouchableOpacity onPress={this.pointMap}>
+                  <Label>Point out map location</Label> 
                   <MapView
-                    style={{ height: 100, width: 100 }}
+                    style={{ height: 100, width: width - 80, marginTop: 15 }}
                     provider={PROVIDER_GOOGLE}
                     region={this.state.region}
                     mapType={'hybrid'}
@@ -290,13 +302,14 @@ class CreateEvent extends Component {
                       key={'MarkerKey'}
                       coordinate={this.state.eventCoordinate}
                     />
-
-                  </MapView> : null
-                }
-                
-
-            </Button>
+                  </MapView> 
+                </TouchableOpacity>
+              </Item>
+              : null
+            }
+          </Form>
         </CustomCard>
+
         <CustomCard header="Select friends to watch you" style={{ backgroundColor: 'white' }}>
           <FlatList
             data={this.props.users.records}
