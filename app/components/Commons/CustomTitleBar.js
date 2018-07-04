@@ -85,6 +85,13 @@ export const plainStandard = ({navigation, screenProps}, title = '', disableBack
   }
 }
 
+export const headless = ({ navigation }) => {
+  return {
+    header: 'none',
+    gesturesEnabled: false,
+  }
+}
+
 export const profile = ({navigation}, title = '') => {
   const header = (
     <Header style={{ backgroundColor: '#00b700', borderBottomWidth: 0 }}>
@@ -111,4 +118,5 @@ export const profile = ({navigation}, title = '') => {
     header,
     gesturesEnabled: false,
   }
+  
 }

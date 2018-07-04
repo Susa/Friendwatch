@@ -318,7 +318,7 @@ class CreateEvent extends Component {
           />
         </CustomCard>
 
-        <Button primary onPress={this.onEventSave}><Text> Create Event </Text></Button>
+        <Button primary onPress={this.onEventSave} full><Text> Create Event </Text></Button>
 
       </Layout>
     )

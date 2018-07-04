@@ -1,8 +1,8 @@
 import React from 'react'
 import { View, TouchableOpacity, StatusBar, Image, Dimensions } from 'react-native'
-import { Container, Content, Icon } from 'native-base'
+import { Container, Content, Icon, Button } from 'native-base'
 import { computeSize } from '../../utils/DeviceRatio'
-import Button from '../Button'
+
 const { width, height } = Dimensions.get('window')
 // Resources
 // backgroundColor: '#29AD8C'
@@ -19,7 +19,7 @@ const Layout = props => {
     backgroundImage = null
 
   return (
-    <Container style={{ backgroundColor: '#fff', flex: 1, padding: computeSize(35) }}>
+    <Container style={{ backgroundColor: '#fff', flex: 1, padding: computeSize(20) }}>
     {
       !_.isEmpty(props.noBackground) || !props.noBackground ? <Image 
       style={{ height, width, resizeMode: 'cover', position: 'absolute' }} 
@@ -82,6 +82,7 @@ const Layout = props => {
   
       {props.bottomButton ? (
         <Button
+          full
           text={props.bottomButtonText}
           style={{ marginBottom: computeSize(30), margin: computeSize(20) }}
           textStyle={{ fontSize: computeSize(40), fontFamily: 'OpenSans-Light' }}

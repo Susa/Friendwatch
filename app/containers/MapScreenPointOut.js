@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
   NativeEventEmitter,
-  NativeModules
+  NativeModules,
+  View
 } from 'react-native'
 
 import { Container, Button, Text } from 'native-base';
@@ -72,11 +73,11 @@ export default class MapScreenPointOut extends Component {
             coordinate={this.state.coordinate}
           />
 
-          <Button primary onPress={this.onClose} style={{ position: 'absolute', bottom: 0, alignSelf: 'center', marginBottom: 20 }}>
-            <Text>Close Map</Text>
-          </Button>
-
         </MapView>
+        <Button primary onPress={this.onClose} full>
+          <Text>Close Map</Text>
+        </Button>
+
       </Container>
     );
   }

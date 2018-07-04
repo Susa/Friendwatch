@@ -145,7 +145,7 @@ const MainNavigator = StackNavigator(
     MapScreenPointOut: {
       screen: MapScreenPointOut,
       navigationOptions: ({ navigation, screenProps }) =>
-        CustomTitleBar.standard({navigation,screenProps}, 'MapScreenPointOut'),
+        CustomTitleBar.headless({navigation,screenProps}, 'MapScreenPointOut'),
     },
   },
   {
