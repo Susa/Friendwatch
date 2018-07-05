@@ -92,20 +92,18 @@ class RegisterUser extends Component {
           Toast.fail('Password mismatch', 1)
         }
         else {
-          alert('Passed')
-          // let newPayload = {
-          //   ...payload,
-          //   saved_location: this.state.currentHome,
-          //   home_location: this.state.currentSaved,
-          //   home_location_details: this.state.currentHomeDetails,
-          //   saved_location_details: this.state.currentSavedDetails
+          let newPayload = {
+            ...payload,
+            saved_location: this.state.currentHome,
+            home_location: this.state.currentSaved,
+            saved_location_details: this.state.currentSavedCoordinate
             
-          // }
-          // this.props.dispatch({
-          //   type: 'auth/saveUser',
-          //   payload: newPayload,
-          //   callback: this.onSuccess,
-          // })
+          }
+          this.props.dispatch({
+            type: 'auth/saveUser',
+            payload: newPayload,
+            callback: this.onSuccess,
+          })
         }
       }
     })

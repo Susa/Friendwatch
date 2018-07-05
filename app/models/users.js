@@ -7,7 +7,7 @@ export default {
   namespace: 'users',
   state: {
     records: [],
-    activeRecord: {},
+    activeRecord: {}
   },
   reducers: {
     loadUsers(state, { payload }) {
@@ -32,7 +32,11 @@ export default {
           const data = yield get('/api/v1/users/exceptme')
 
           if (!_.isEmpty(data)) {
-            yield put(createAction('loadUsers')(data.data))
+
+            let invited = _.map(data.data, (user, i) => {
+              return { ...user, selected: false }
+            })
+            yield put(createAction('loadUsers')(invited))
           }
         } catch (e) {
           console.log('Error found ', e)
@@ -54,6 +58,33 @@ export default {
           }
         } catch (e) {
           console.log('Error found ', e)
+        }
+      },
+
+      { type: 'takeLatest' },
+    ],
+    inviteUser: [
+      function*({ userId, callback = null }, { select, put }) {
+        try {
+          let records = yield select(state => state.users.records);
+          
+          let invited = _.map(records, user => {
+            if(user.id === userId){
+              if(user.selected)
+                return { ...user, selected: false }
+              else 
+                return { ...user, selected: true }
+            }
+            return { ...user }
+          })
+
+          console.log('invited ', invited)
+
+          yield put(createAction('loadUsers')(invited))
+
+        } catch (e) {
+          callback(false)
+          console.log(e, 'error get Events')
         }
       },
 

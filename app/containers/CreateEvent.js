@@ -87,23 +87,34 @@ class CreateEvent extends Component {
 
   onEventSave = () => {
     this.props.form.validateFields((error, payload) => {
-      if(_.isEmpty(this.state.invited) || this.state.invited == []){
-        alert('Please invite at least one user')
+      if(_.isEmpty(this.state.eventCoordinate)){
+        alert('Please fill up address and point out exact map location')
       }
-      else {
-        let newPayload = {
-          payload,
-          user_id: auth[0].logged_user,
-          invited: this.state.invited,
-          event_location: this.state.eventLocation,
-          event_location_details: this.state.eventLocationDetails
-        }
 
-        this.props.dispatch({
-          type: 'events/saveEvent',
-          payload: newPayload,
-          callback: navigateTo(this.props.navigation, 'Home'),
+      else {
+
+        let invited = _.filter(this.props.users.records, (user, i) => {
+          return user.selected == true
         })
+
+        if(_.size(invited) == 0){
+          alert('Please invite at least one user')
+        }
+        else {
+          let newPayload = {
+            payload,
+            user_id: auth[0].logged_user,
+            invited,
+            event_location: this.state.eventLocation,
+            event_location_details: this.state.eventCoordinate
+          }
+  
+          this.props.dispatch({
+            type: 'events/saveEvent',
+            payload: newPayload,
+            callback: navigateTo(this.props.navigation, 'Home'),
+          })
+        }
       }
     })
   }
@@ -121,17 +132,10 @@ class CreateEvent extends Component {
   }
 
   inviteUser = (data) => {
-    let invitedList = this.state.invited
-
-    const itemIdx = _.findIndex(invitedList, item => data.id === item.id)
-
-    if(itemIdx < 0){
-      invitedList.push(data)
-      this.setState({ invited: invitedList })
-    } else {
-      invitedList.splice(itemIdx, 1)
-      this.setState({ invited: invitedList })
-    }
+    this.props.dispatch({
+      type: 'users/inviteUser',
+      userId: data.id
+    })
   }
 
   handleChange = (name, value) => {
@@ -140,39 +144,27 @@ class CreateEvent extends Component {
     })
   }
 
-  checkInvitation = (data) => {
-    let invitedList = this.state.invited
-
-    const itemIdx = _.findIndex(invitedList, item => data.id === item.id)
-
-    if(itemIdx < 0){
-      return (
-        <Button light small onPress={() => this.inviteUser(data)}>
-          <Text>
-            <Icon type="Feather" name="user-plus" style={{ fontSize: 14 }}/>
-            Invite Friend
-          </Text>
-        </Button>
-      )
-    } else {
-      return (
-        <Button light small onPress={() => this.inviteUser(data)}>
-          <Text>
-            <Icon type="Feather" name="user-x" style={{ fontSize: 14 }}/>
-            Cancel
-          </Text>
-        </Button>
-      )
-    }
-  }
-
   _renderItem = ({item}) => (
     <ListItem>
       <Body>
         <Text>{item.fullname}</Text>
       </Body>
       <Right>
-        {this.checkInvitation(item)}
+        {
+          item.selected ? 
+          (<Button light small onPress={() => this.inviteUser(item)}>
+            <Text>
+              <Icon type="Feather" name="user-x" style={{ fontSize: 14 }}/>
+              Cancel
+            </Text>
+          </Button>) : 
+          (<Button light small onPress={() => this.inviteUser(item)}>
+            <Text>
+              <Icon type="Feather" name="user-plus" style={{ fontSize: 14 }}/>
+              Invite Friend
+            </Text>
+          </Button>)
+        }
       </Right>
     </ListItem>
   )
