@@ -168,7 +168,7 @@ class UsersList extends Component {
           </Left>
           <Body>
             <Text>{this.state.loggedUser.fullname}</Text>
-            <Text note>{this.state.loggedUser.home_location}</Text>
+            <Text note>{this.state.loggedUser.saved_location}</Text>
           </Body>
           <Right>
             {/* <Text note>this.checkInvitation(user)} key={i}</Text> */}

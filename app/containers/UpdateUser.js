@@ -70,7 +70,8 @@ class UpdateUser extends Component {
           longitude: place.longitude,
           latitudeDelta: 0.001,
           longitudeDelta: 0.001
-        }
+        },
+        savedChanged: true
       })
     })
     .catch(error => console.log(error.message))
