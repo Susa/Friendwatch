@@ -162,6 +162,11 @@ const AppNavigator = StackNavigator(
       navigationOptions: ({ navigation }) =>
         CustomTitleBar.plainStandard({ navigation }, 'Register User'),
     },
+    MapScreenPointOutMain: {
+      screen: MapScreenPointOut,
+      navigationOptions: ({ navigation }) =>
+        CustomTitleBar.headless({ navigation }, 'MapScreenPointOut'),
+    },
     SearchPlaces: {
       screen: SearchPlaces,
       navigationOptions: ({ navigation, screenProps }) =>

@@ -39,6 +39,16 @@ const resetNavigateTo = (navigation, route) => {
   )
 }
 
+const resetNavigate = (navigation, route) => {
+  navigation.dispatch(
+    NavigationActions.reset({
+      index: 0,
+      key: null,
+      actions: [NavigationActions.navigate({ routeName: route })],
+    })
+  )
+}
+
 const resetRootNavigateTo = navigation =>
   navigation.dispatch(
     {

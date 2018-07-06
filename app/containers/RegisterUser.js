@@ -18,7 +18,7 @@ import {
 } from 'native-base'
 import { NavigationActions } from '../utils'
 import { computeSize } from '../utils/DeviceRatio'
-import { resetNavigateTo, backAction, navigateTo } from '../components/Commons/CustomRouteActions'
+import { resetNavigateTo, backAction, navigateTo, newNavigate } from '../components/Commons/CustomRouteActions'
 import { CustomCard, Layout, ValidationText } from '../components'
 
 import { createForm } from 'rc-form'
@@ -60,8 +60,8 @@ class RegisterUser extends Component {
         region: {
           latitude: place.latitude,
           longitude: place.longitude,
-          latitudeDelta: 0.02,
-          longitudeDelta: 0.02
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.001
         }
       })
     })
@@ -94,10 +94,10 @@ class RegisterUser extends Component {
         else {
           let newPayload = {
             ...payload,
-            saved_location: this.state.currentHome,
+            saved_location: this.state.currentSaved,
             home_location: this.state.currentSaved,
-            saved_location_details: this.state.currentSavedCoordinate
-            
+            saved_location_details: this.state.currentSavedCoordinate,
+            home_location_details: this.state.currentSavedCoordinate
           }
           this.props.dispatch({
             type: 'auth/saveUser',
@@ -137,14 +137,14 @@ class RegisterUser extends Component {
       region: {
         latitude: coordinate.latitude,
         longitude: coordinate.longitude,
-        latitudeDelta: 0.02,
-        longitudeDelta: 0.02
+        latitudeDelta: 0.001,
+        longitudeDelta: 0.001
       }
     }, () => console.log(this.state))
   }
 
   pointMap = () => {
-    navigateTo(this.props.navigation, 'MapScreenPointOut', { onClose: this.onPointMapClose })
+    newNavigate(this.props.navigation, 'MapScreenPointOutMain', { onClose: this.onPointMapClose, region: this.state.region })
   }
 
   render() {
@@ -180,7 +180,7 @@ class RegisterUser extends Component {
         
         <StatusBar barStyle="light-content" />
 
-        <CustomCard header="Fill up information" style={{ paddingBottom: 20 }}>
+        <CustomCard header="Fill up information" style={{ paddingBottom: 20, backgroundColor: 'white' }}>
           <Form>
             <Item floatingLabel>
               <Label>Fullname</Label>
@@ -269,8 +269,8 @@ class RegisterUser extends Component {
                     >
 
                     <Marker
-                      title={'Marker Here'}
-                      key={'MarkerKey'}
+                      title={'Location'}
+                      key={'Selected Location'}
                       coordinate={this.state.currentSavedCoordinate}
                     />
                   </MapView> 

@@ -42,7 +42,6 @@ class UsersList extends Component {
   _keyExtractor = (item, index) => item.id.toString();
 
   getUsers = () => {
-    console.log('called')
     this.props.dispatch({
       type: 'users/getUsers'
     })

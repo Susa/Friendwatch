@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, ActivityIndicator, TouchableOpacity } from 'react-native'
+import { Text, ActivityIndicator, TouchableOpacity, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
 
 import {
@@ -11,11 +11,15 @@ import {
 } from 'native-base'
 
 import { NavigationActions } from '../utils'
-import { backAction } from '../components/Commons/CustomRouteActions'
+import { backAction, navigateTo } from '../components/Commons/CustomRouteActions'
 import { CustomCard, Layout } from '../components'
 
 import { createForm } from 'rc-form'
 import RNGooglePlaces from 'react-native-google-places'
+
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+
+const { width, height } = Dimensions.get('window')
 
 @connect(({ auth }) => ({ ...auth }))
 class UpdateUser extends Component {
@@ -25,6 +29,7 @@ class UpdateUser extends Component {
     currentSaved: 'Saved Location',
     currentHomeDetails: '',
     currentSavedDetails: '',
+    currentSavedCoordinate: {},
     currentUser: {},
     homeChanged: false,
     savedChanged: false
@@ -51,9 +56,22 @@ class UpdateUser extends Component {
   }
 
   savedLocationModal() {
-    RNGooglePlaces.openPlacePickerModal()
+    RNGooglePlaces.openAutocompleteModal()
     .then((place) => {
-		  this.setState({ currentSaved: place.address, currentSavedDetails: place, savedChanged: true })
+		  this.setState({ 
+        currentSaved: place.address, 
+        currentSavedDetails: place, 
+        currentSavedCoordinate: {
+          longitude: place.longitude,
+          latitude: place.latitude
+        },
+        region: {
+          latitude: place.latitude,
+          longitude: place.longitude,
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.001
+        }
+      })
     })
     .catch(error => console.log(error.message))
   }
@@ -77,12 +95,13 @@ class UpdateUser extends Component {
       let newPayload = {
         ...payload,
         user_id: this.state.currentUser.id,
-        home_changed: this.state.homeChanged,
+        email: this.state.currentUser.email,
+        home_changed: this.state.savedChanged,
         saved_changed: this.state.savedChanged,
-        saved_location: this.state.currentHome,
+        saved_location: this.state.currentSaved,
         home_location: this.state.currentSaved,
-        home_location_details: this.state.currentHomeDetails,
-        saved_location_details: this.state.currentSavedDetails
+        home_location_details: this.state.currentSavedCoordinate,
+        saved_location_details: this.state.currentSavedCoordinate
       }
 
       this.props.dispatch({
@@ -121,6 +140,22 @@ class UpdateUser extends Component {
     //console.log(details)
   }
 
+  onPointMapClose = (coordinate) => {
+    this.setState({
+      currentSavedCoordinate: coordinate,
+      region: {
+        latitude: coordinate.latitude,
+        longitude: coordinate.longitude,
+        latitudeDelta: 0.0015,
+        longitudeDelta: 0.0015
+      }
+    }, () => console.log(this.state))
+  }
+
+  pointMap = () => {
+    navigateTo(this.props.navigation, 'MapScreenPointOut', { onClose: this.onPointMapClose, region: this.state.region })
+  }
+
   render() {
     const { fetching } = this.props
     const { getFieldProps } = this.props.form
@@ -128,7 +163,7 @@ class UpdateUser extends Component {
     return (
       <Layout>
         
-        <CustomCard header="Update user information" style={{ paddingBottom: 20 }}>
+        <CustomCard header="Update user information" style={{ paddingBottom: 20, backgroundColor: 'white' }}>
           <Form>
             <Item floatingLabel>
               <Label>Fullname</Label>
@@ -160,20 +195,44 @@ class UpdateUser extends Component {
               />
             </Item>
             
-            <Item stackedLabel style={{ alignItems: 'flex-start' }}>
+            {/* <Item stackedLabel style={{ alignItems: 'flex-start' }}>
               <Label>Home Location</Label>
               <TouchableOpacity onPress={() => this.homeLocationModal()}>
                 <Text style={{ fontSize: 18, marginTop: 10, marginBottom: 30, alignSelf: 'flex-start' }}>{this.state.currentHome}</Text>
               </TouchableOpacity>
-            </Item>
+            </Item> */}
             
             <Item stackedLabel style={{ alignItems: 'flex-start' }}>
               <Label>Saved Location</Label>
               <TouchableOpacity onPress={() => this.savedLocationModal()}>
-                <Text style={{ fontSize: 18, marginTop: 10, marginBottom: 30, alignSelf: 'flex-start' }}>{this.state.currentSaved}</Text>
+                <Text style={{ fontSize: 18, marginTop: 10, marginBottom: 10, alignSelf: 'flex-start' }}>{this.state.currentSaved}</Text>
               </TouchableOpacity>
             </Item>
-          
+            
+            {
+              !_.isEmpty(this.state.currentSavedCoordinate) ? 
+
+              <Item stackedLabel style={{ alignItems: 'flex-start' }}>
+                <TouchableOpacity onPress={this.pointMap}>
+                  <Label>Point out map location</Label> 
+                  <MapView
+                    style={{ height: 100, width: width - 80, marginTop: 15 }}
+                    provider={PROVIDER_GOOGLE}
+                    region={this.state.region}
+                    mapType={'hybrid'}
+                    >
+
+                    <Marker
+                      title={'Location'}
+                      key={'Selected Location'}
+                      coordinate={this.state.currentSavedCoordinate}
+                    />
+                  </MapView> 
+                </TouchableOpacity>
+              </Item>
+              : null
+            }
+
           </Form>
         </CustomCard>
 

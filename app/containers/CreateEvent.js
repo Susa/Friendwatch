@@ -206,14 +206,23 @@ class CreateEvent extends Component {
               />
             </Item>
             <ValidationText {...this.props} field='title' />
+
             <Item stackedLabel>
-              <Label>More event details</Label>
+              <Label>Short event description</Label>
               <Input
-                {...getFieldProps('description')}
-                placeholder="More details about the event"
-                onChangeText={val => this.handleChange('description', val)}
+                {...getFieldProps('description', {
+                  rules: [{
+                    required: true,
+                    message: 'Short description is required',
+                  }]
+                }
+              )}
+              placeholder="More event details"
+              onChangeText={val => this.handleChange('description', val)}
               />
             </Item>
+            <ValidationText {...this.props} field='description' />
+
             <Item stackedLabel>
               <Label>Date of the event?</Label>
               <DatePicker

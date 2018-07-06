@@ -82,7 +82,7 @@ export default {
       function*({ payload, callback }, { call, put }) {
         yield put(createAction('updateState')({ fetching: true }))
         try {
-          const response = yield login('/api/user', payload)
+          const response = yield post('/api/user', payload)
 
           if(payload.user_id)
           {
