@@ -72,13 +72,11 @@ export default class MapScreenPointOut extends Component {
           mapType={'hybrid'}
           onPress={this.mapPointed}
           >
-
-          <Marker
-            title={'Location'}
-            key={'Selected Location'}
-            coordinate={this.state.coordinate}
-          />
-
+            <Marker
+              title={'Location'}
+              key={'Selected Location'}
+              coordinate={this.state.coordinate}
+            />
         </MapView>
         <Button primary onPress={this.onClose} full>
           <Text>Select Location</Text>

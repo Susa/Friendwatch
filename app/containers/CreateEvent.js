@@ -9,6 +9,7 @@ import { createForm } from 'rc-form'
 import _ from 'lodash'
 import moment from 'moment'
 import Realm from '../utils/RealmStore'
+import { computeSize } from '../utils/DeviceRatio'
 import RNGooglePlaces from 'react-native-google-places'
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 
@@ -152,16 +153,14 @@ class CreateEvent extends Component {
       <Right>
         {
           item.selected ? 
-          (<Button light small onPress={() => this.inviteUser(item)}>
+          (<Button small onPress={() => this.inviteUser(item)} danger style={{ width: computeSize(170), justifyContent: 'center' }}>
             <Text>
-              <Icon type="Feather" name="user-x" style={{ fontSize: 14 }}/>
               Cancel
             </Text>
           </Button>) : 
-          (<Button light small onPress={() => this.inviteUser(item)}>
+          (<Button small onPress={() => this.inviteUser(item)} primary style={{ width: computeSize(170), justifyContent: 'center' }}>
             <Text>
-              <Icon type="Feather" name="user-plus" style={{ fontSize: 14 }}/>
-              Invite Friend
+              Invite
             </Text>
           </Button>)
         }
