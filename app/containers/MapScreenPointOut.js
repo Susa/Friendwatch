@@ -25,14 +25,20 @@ export default class MapScreenPointOut extends Component {
       region: {
         latitude: 37.3320003,
         longitude: -122.03078119999998,
-        latitudeDelta: 0.02,
-        longitudeDelta: 0.02
+        latitudeDelta: 0.001,
+        longitudeDelta: 0.001
       }
     }
   }
 
   componentDidMount(){
-    //console.log(this.props)
+    this.setState({ 
+      coordinate: {
+        latitude: this.props.navigation.state.params.region.latitude,
+        longitude: this.props.navigation.state.params.region.longitude,
+      },
+      region: this.props.navigation.state.params.region
+    })
   }
 
   mapPointed = (e) => {
@@ -41,8 +47,8 @@ export default class MapScreenPointOut extends Component {
       region: {
         latitude,
         longitude,
-        latitudeDelta: 0.02,
-        longitudeDelta: 0.02
+        latitudeDelta: 0.001,
+        longitudeDelta: 0.001
       },
       coordinate: { 
         latitude, 
@@ -68,14 +74,14 @@ export default class MapScreenPointOut extends Component {
           >
 
           <Marker
-            title={'Marker Here'}
-            key={'MarkerKey'}
+            title={'Location'}
+            key={'Selected Location'}
             coordinate={this.state.coordinate}
           />
 
         </MapView>
         <Button primary onPress={this.onClose} full>
-          <Text>Close Map</Text>
+          <Text>Select Location</Text>
         </Button>
 
       </Container>

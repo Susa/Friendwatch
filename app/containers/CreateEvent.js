@@ -52,8 +52,8 @@ class CreateEvent extends Component {
         region: {
           latitude: place.latitude,
           longitude: place.longitude,
-          latitudeDelta: 0.02,
-          longitudeDelta: 0.02
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.001
         }
       })
 
@@ -175,14 +175,14 @@ class CreateEvent extends Component {
       region: {
         latitude: coordinate.latitude,
         longitude: coordinate.longitude,
-        latitudeDelta: 0.02,
-        longitudeDelta: 0.02
+        latitudeDelta: 0.0015,
+        longitudeDelta: 0.0015
       }
     }, () => console.log(this.state))
   }
 
   pointMap = () => {
-    navigateTo(this.props.navigation, 'MapScreenPointOut', { onClose: this.onPointMapClose })
+    navigateTo(this.props.navigation, 'MapScreenPointOut', { onClose: this.onPointMapClose, region: this.state.region })
   }
 
   render() {
