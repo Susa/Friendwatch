@@ -83,9 +83,12 @@ export default {
         yield put(createAction('updateState')({ fetching: true }))
         try {
 
-          //console.log('Payload ', payload)
-
-          const response = yield post('/api/user', payload)
+          const response = []
+          
+          if(!_.isEmpty(payload.user_id))
+            response = yield post('/api/user', payload)
+          else
+            response = yield login('/api/user', payload)
 
           if(payload.user_id)
           {

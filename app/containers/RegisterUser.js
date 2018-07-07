@@ -89,7 +89,7 @@ class RegisterUser extends Component {
       }
       else {
         if(payload.password !== payload.confirm) {
-          Toast.fail('Password mismatch', 1)
+          alert('Password mismatch')
         }
         else {
           let newPayload = {
@@ -236,10 +236,17 @@ class RegisterUser extends Component {
             <Item floatingLabel>
               <Label>Contact No</Label>
               <Input
-                {...getFieldProps('contact_no')}
+                {...getFieldProps('contact_no', {
+                    rules: [{
+                      required: true,
+                      message: 'Contact is required',
+                    }]
+                  }
+                )}
                 onChangeText={val => this.handleChange('contact_no', val)}
               />
             </Item>
+            <ValidationText {...this.props} field='contact_no' />
             
             {/* <Item stackedLabel style={{ alignItems: 'flex-start' }}>
               <Label>Home Location</Label>
