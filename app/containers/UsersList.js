@@ -147,7 +147,7 @@ class UsersList extends Component {
         </Left>
         <Body>
           <Text>{item.fullname}</Text>
-          <Text note>{item.home_location}</Text>
+          <Text note>{item.saved_location}</Text>
         </Body>
         <Right>
           {/* <Text note>this.checkInvitation(user)} key={i}</Text> */}

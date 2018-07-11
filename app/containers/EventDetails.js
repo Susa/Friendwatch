@@ -503,19 +503,23 @@ class EventDetails extends Component {
             </Text>
           </Body>
         </View>
-
+        
         {
-          this.state.trackState ? 
-          <Button style={{ width: '100%', justifyContent: 'center' }} danger onPress={this.stopMonitoring}>
-            <Text>Stop Tracking</Text>
-          </Button> 
-          :
-          <Button style={{ width: '100%', justifyContent: 'center' }} onPress={this.startMonitoring}>
-            <Text>Start Tracking</Text>
-          </Button>
+          !this.state.viewOnly ? 
+            <View>
+              {
+                this.state.trackState ? 
+                <Button style={{ width: '100%', justifyContent: 'center' }} danger onPress={this.stopMonitoring}>
+                  <Text>Stop Tracking</Text>
+                </Button> 
+                :
+                <Button style={{ width: '100%', justifyContent: 'center' }} onPress={this.startMonitoring}>
+                  <Text>Start Tracking</Text>
+                </Button>
+              }   
+            </View> : null
         }   
 
-        
         {/* <View>
           <Text style={{ fontFamily: 'BentonSans Thin', color: '#454545' }}>Map View</Text>
         </View>
