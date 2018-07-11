@@ -7,7 +7,7 @@ import {
   AppState,
   Geolocation } from 'react-native'
 import { connect } from 'react-redux'
-import { Text, Icon, Body, Button, Form, Tabs, Tab, List, Left, Right, Radio } from 'native-base'
+import { Text, Icon, Body, Button, Form, Tabs, Tab, List, Left, Right, Radio, Picker } from 'native-base'
 import { Layout, CustomCard } from '../components'
 import { navigateTo } from '../components/Commons/CustomRouteActions'
 import { computeSize } from '../utils/DeviceRatio'
@@ -30,12 +30,13 @@ class EventDetails extends Component {
     
     this.state = {
       locValue: 'home',
-      transpoValue: 'bike',
-      transpoLabel: 'Bike',
+      transpoValue: 'walk',
+      transpoLabel: 'walk',
+      afterEventValue: 'home',
+      afterEventLabel: 'home',
       evLoc: JSON.parse(params.event_location_details),
       homeLoc: JSON.parse(params.user.home_location_details),
       eventID: this.props.navigation.state.params.id,
-  
       region: {
         latitude: address.latitude,
         longitude: address.longitude,
@@ -51,7 +52,6 @@ class EventDetails extends Component {
       trackState: false
     }
   }
-
 
   componentDidMount(){
     let { params } = this.props.navigation.state
@@ -212,6 +212,18 @@ class EventDetails extends Component {
     navigateTo(this.props.navigation, 'MapScreenFullView', { address, event: params })
   }
 
+  onValueChangeAfterEvent(value) {
+    this.setState({
+      afterEventLabel: value
+    });
+  }
+
+  onValueChangeTranspo(value) {
+    this.setState({
+      transpoLabel: value
+    });
+  }
+
   render() {
     let { params } = this.props.navigation.state
 
@@ -355,7 +367,7 @@ class EventDetails extends Component {
                 marginBottom: 5
               }}
             >
-              {address.name}
+              Location after event
             </Text>
             <Text
               style={{
@@ -364,7 +376,17 @@ class EventDetails extends Component {
                 color: 'gray',
               }}
             >
-              {address.addressComponents.locality}, {address.addressComponents.administrative_area_level_2}
+              <Picker
+                mode="dropdown"
+                selectedValue={this.state.afterEventLabel}
+                onValueChange={this.onValueChangeAfterEvent.bind(this)}
+                textStyle={{ fontWeight: 'bold'  }}
+              >
+
+                <Picker.Item label="My Home Location" value="home" />
+                <Picker.Item label="My Saved Location" value="saved" />
+
+              </Picker>
             </Text>
           </Body>
         </View>
@@ -401,7 +423,21 @@ class EventDetails extends Component {
                 color: 'gray',
               }}
             >
-              {this.state.transpoLabel}
+              <Picker
+                mode="dropdown"
+                selectedValue={this.state.transpoLabel}
+                onValueChange={this.onValueChangeTranspo.bind(this)}
+                textStyle={{ fontWeight: 'bold'  }}
+              >
+
+                <Picker.Item label="Walk" value="walk" />
+                <Picker.Item label="Bus" value="bus" />
+                <Picker.Item label="Train" value="train" />
+                <Picker.Item label="Bike" value="bike" />
+                <Picker.Item label="Lyft/Taxi" value="taxi" />
+                <Picker.Item label="Personal Vehicle" value="vehicle" />
+
+              </Picker>
             </Text>
           </Body>
         </View>
@@ -432,52 +468,6 @@ class EventDetails extends Component {
             />
 
         </View> */}
-
-        {/* <CustomCard>
-          <Form>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'column',
-                justifyContent: 'space-between'
-              }}>
-              <View style={{ flex: 1, flexDirection: 'column' }}>
-                <Tabs initialPage={0}>
-                  <Tab heading="Details">
-                    <List renderHeader={() => 'Location after event?'}>
-                      {savedLocations.map(i => (
-                        <View>
-                          <Left>
-                            <Text>Lunch Break</Text>
-                          </Left>
-                          <Right>
-                            <Radio
-                            color={"#f0ad4e"}
-                            selectedColor={"#5cb85c"}
-                            selected={false}
-                            />
-                          </Right>
-                        </View>
-                      ))}
-                    </List>
-
-                    <List renderHeader={() => 'How will you get to location?'}>
-                      {homeTranspo.map(i => (
-                        <Radio.RadioItem key={i.value} checked={this.state.transpoValue === i.value} onChange={() => this.transpoChange(i.value, i.label)}>
-                          {i.label}
-                        </Radio.RadioItem>
-                      ))}
-                    </List>
-                  </Tab>
-                  <Tab heading="Map View">
-
-                  </Tab>
-                </Tabs>
-
-              </View>
-            </View>
-          </Form>
-        </CustomCard> */}
 
       </Layout>
     )

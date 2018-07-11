@@ -238,11 +238,11 @@ class UpdateUser extends Component {
         </CustomCard>
 
         {fetching ? (
-          <Button success full block onPress={this.onRegister}>
+          <Button success block onPress={this.onRegister}>
             <ActivityIndicator color="white" />
           </Button>
         ) : (
-          <Button success full block onPress={this.onRegister}>
+          <Button success block onPress={this.onRegister}>
             <Text style={{ color: 'white' }}>Save Changes</Text>
           </Button>
         )}

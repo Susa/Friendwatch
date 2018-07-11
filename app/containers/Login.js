@@ -124,11 +124,11 @@ class Login extends Component {
         </Button>
 
         {fetching ? (
-          <Button success full block onPress={this.onLogin}>
+          <Button success block onPress={this.onLogin}>
             <ActivityIndicator color="white" />
           </Button>
         ) : (
-          <Button success full block onPress={this.onLogin}>
+          <Button success block onPress={this.onLogin}>
             <Text style={{ color: 'white' }}>Login</Text>
           </Button>
         )}
