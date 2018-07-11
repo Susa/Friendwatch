@@ -150,7 +150,7 @@ class MyProfile extends Component {
 
             <View style={{ flexDirection: 'row' }}>
               <View style={{ flex: 0.3, alignItems: 'flex-start', justifyContent: 'center' }}>
-                {
+                {/* {
                   this.state.isOwner ? <TouchableOpacity onPress={() => this.updatePhoto()}>
                   <Icon
                     type="Feather"
@@ -158,12 +158,12 @@ class MyProfile extends Component {
                     style={{ color: 'white' }}
                   />
                   </TouchableOpacity> : null
-                }
+                } */}
 
               </View>
               <View style={{ flex: 0.3, alignItems: 'center' }}>
               
-                <Thumbnail square style={{ width: computeSize(140), height: computeSize(140), alignSelf: 'center' }} source={require('../../assets/login.png')} />
+                <Thumbnail square style={{ width: computeSize(140), height: computeSize(140), alignSelf: 'center' }} source={require('../../assets/user.png')} />
               
               </View>
               <View style={{ flex: 0.3, alignItems: 'flex-end', justifyContent: 'center' }}>

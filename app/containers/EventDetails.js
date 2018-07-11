@@ -18,7 +18,8 @@ import Realm from '../utils/RealmStore'
 
 const GeofenceEmitter = new NativeEventEmitter(NativeModules.Geofence);
 
-const interval = null;
+let auth = Realm.objects('Auth')
+const interval = null
 
 @connect(({ app, events }) => ({ ...app, events }))
 class EventDetails extends Component {
@@ -30,10 +31,10 @@ class EventDetails extends Component {
     
     this.state = {
       locValue: 'home',
-      transpoValue: 'walk',
-      transpoLabel: 'walk',
-      afterEventValue: 'home',
-      afterEventLabel: 'home',
+      transpoValue: params.return_transpo,
+      transpoLabel: params.return_transpo,
+      afterEventValue: params.return_plan,
+      afterEventLabel: params.return_plan,
       evLoc: JSON.parse(params.event_location_details),
       homeLoc: JSON.parse(params.user.home_location_details),
       eventID: this.props.navigation.state.params.id,
@@ -49,7 +50,8 @@ class EventDetails extends Component {
       },
       appState: AppState.currentState,
       event: params,
-      trackState: false
+      trackState: false,
+      viewOnly: true
     }
   }
 
@@ -59,6 +61,9 @@ class EventDetails extends Component {
     GeofenceEmitter.addListener('didEnterRegion', (reminder) => this.didEnterRegion());
     AppState.addEventListener('change', this._handleAppStateChange);
 
+    if(params.user.id === auth[0].logged_user){
+      this.setState({ viewOnly: false })
+    }
     // Realm.write(() => {
     //   let trackObj = Realm.objects('Tracker')
     //   Realm.delete(trackObj)
@@ -171,20 +176,6 @@ class EventDetails extends Component {
     )
   }
 
-  onConfirm = () => {
-    let payload = {
-      event_id: this.props.navigation.state.params.id,
-      return_plan: this.state.locValue,
-      return_transpo: this.state.transpoValue
-    }
-
-    this.props.dispatch({
-      type: 'events/updateEventPlan',
-      payload,
-      callback: this.onSuccess
-    })
-  }
-
   locChange = (locValue) => {
     let { params } = this.props.navigation.state
     let homeLoc = JSON.parse(params.user.home_location_details)
@@ -212,16 +203,60 @@ class EventDetails extends Component {
     navigateTo(this.props.navigation, 'MapScreenFullView', { address, event: params })
   }
 
+  onConfirm = () => {
+    let payload = {
+      event_id: this.props.navigation.state.params.id,
+      return_plan: this.state.locValue,
+      return_transpo: this.state.transpoValue
+    }
+
+    this.props.dispatch({
+      type: 'events/updateEventPlan',
+      payload,
+      callback: this.onSuccess
+    })
+  }
+
   onValueChangeAfterEvent(value) {
+    
+    let payload = {
+      event_id: this.props.navigation.state.params.id,
+      return_plan: value,
+      return_transpo: this.state.transpoLabel
+    }
+
     this.setState({
       afterEventLabel: value
-    });
+    }, () => {
+      this.props.dispatch({
+        type: 'events/updateEventPlan',
+        payload,
+        callback: this.onSuccess
+      })
+    })
   }
 
   onValueChangeTranspo(value) {
+
+    let payload = {
+      event_id: this.props.navigation.state.params.id,
+      return_plan: this.state.afterEventLabel,
+      return_transpo: value
+    }
+
     this.setState({
       transpoLabel: value
-    });
+    }, () => {
+      this.props.dispatch({
+        type: 'events/updateEventPlan',
+        payload,
+        callback: this.onSuccess
+      })
+    })
+  }
+
+  onSuccess = () => {
+    console.log('done')
   }
 
   render() {
@@ -260,8 +295,20 @@ class EventDetails extends Component {
             {params.title}
           </Text>
         </View>
+
+        <View style={{ marginTop: 10, marginBottom: 5 }}>
+          <Text
+            style={{
+              fontSize: computeSize(35),
+              fontFamily: 'BentonSans Regular',
+              color: 'gray',
+            }}
+          >
+            {params.description}
+          </Text>
+        </View>
         
-        <View style={{ marginTop: 10, marginBottom: 20 }}>
+        <View style={{ marginTop: 5, marginBottom: 20 }}>
           <Text
             style={{
               fontSize: computeSize(35),
@@ -376,10 +423,14 @@ class EventDetails extends Component {
                 color: 'gray',
               }}
             >
+
+            {
+              !this.state.viewOnly ? 
               <Picker
                 mode="dropdown"
                 selectedValue={this.state.afterEventLabel}
                 onValueChange={this.onValueChangeAfterEvent.bind(this)}
+                placeholder='Select your return location'
                 textStyle={{ fontWeight: 'bold'  }}
               >
 
@@ -387,6 +438,9 @@ class EventDetails extends Component {
                 <Picker.Item label="My Saved Location" value="saved" />
 
               </Picker>
+              : <Text>{this.state.afterEventLabel ? this.state.afterEventLabel : 'No specified return location yet'}</Text>
+            }
+              
             </Text>
           </Body>
         </View>
@@ -423,10 +477,14 @@ class EventDetails extends Component {
                 color: 'gray',
               }}
             >
+
+            {
+              !this.state.viewOnly ? 
               <Picker
                 mode="dropdown"
                 selectedValue={this.state.transpoLabel}
                 onValueChange={this.onValueChangeTranspo.bind(this)}
+                placeholder='Select your return transit mode'
                 textStyle={{ fontWeight: 'bold'  }}
               >
 
@@ -438,6 +496,10 @@ class EventDetails extends Component {
                 <Picker.Item label="Personal Vehicle" value="vehicle" />
 
               </Picker>
+              : <Text>{this.state.afterEventLabel ? this.state.afterEventLabel : 'No specified return transit yet'}</Text>
+            }
+
+
             </Text>
           </Body>
         </View>
