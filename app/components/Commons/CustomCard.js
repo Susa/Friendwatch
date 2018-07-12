@@ -4,7 +4,7 @@ import { Card, CardItem, Text, Icon } from 'native-base'
 import { computeSize } from '../../utils/DeviceRatio'
 
 const CustomCard = props => (
-  <View style={[{ padding: computeSize(10) }, props.style]}>
+  <View style={[{ padding: computeSize(10), borderColor: 'white', borderRadius: 5 }, props.style]}>
     <Card
       transparent
       style={[{ borderRadius: computeSize(10) }, props.style]}

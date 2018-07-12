@@ -87,7 +87,7 @@ const Layout = props => {
         {
           props.bottomButton ? 
             <Button block onPress={props.bottomButton} style={{ marginTop: 30 }}>
-              <Text style={{ fontSize: computeSize(40) }}>{props.bottomButtonText}</Text>
+              <Text style={{ fontSize: computeSize(35) }}>{props.bottomButtonText}</Text>
             </Button> : null
         }
 

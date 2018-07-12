@@ -318,7 +318,7 @@ class CreateEvent extends Component {
           />
         </CustomCard>
 
-        <Button primary onPress={this.onEventSave} full><Text> Create Event </Text></Button>
+        <Button primary block onPress={this.onEventSave} style={{ marginTop: 5, fontSize: computeSize(35) }}><Text> Create Event </Text></Button>
 
       </Layout>
     )
