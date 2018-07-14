@@ -130,6 +130,7 @@ class EventDetails extends Component {
 
     Realm.write(() => {
       let { params } = this.props.navigation.state
+      
       Realm.create('Tracker', {
         id: uuid.v1(),
         trackId: params.id.toString(),

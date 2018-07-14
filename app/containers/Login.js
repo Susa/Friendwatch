@@ -30,7 +30,7 @@ class Login extends Component {
   componentDidMount(){
     let authObjects = Realm.objects('Auth')
 
-    OneSignal.init("e2c3b80e-34fb-4910-8582-4149fa8b73a2");
+    OneSignal.init("e2b737c6-705f-4c4f-b651-ae728ca93eb9");
 
     if(_.size(authObjects) > 0)
      resetNavigateTo(this.props.navigation, { routeName: 'Main' })

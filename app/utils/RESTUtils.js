@@ -2,7 +2,7 @@ import axios from 'axios'
 import Realm from './RealmStore'
 
 let auth = Realm.objects('Auth');
-const IP_ADDRESS = 'localhost:8000'
+const IP_ADDRESS = '192.168.7.16:8000'
 const auth0BaseUrl = 'http://' + IP_ADDRESS
 
 const instance = axios.create({

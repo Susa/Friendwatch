@@ -12,6 +12,8 @@
 @import GooglePlaces;
 @import GoogleMaps;
 
+#import "RCTOneSignalExtensionService.h"
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions

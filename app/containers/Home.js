@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, ScrollView, Dimensions, TouchableOpacity } from 'react-native'
+import { View, ScrollView, Dimensions, TouchableOpacity, Alert } from 'react-native'
 import { connect } from 'react-redux'
 
 import {
@@ -74,10 +74,12 @@ class Home extends Component {
 
   acceptInvitation = (item, user) => {
     Alert.alert(
-      'Confirmation', 'Accept this invitation',
+      'Confirmation', 
+      'Accept this invitation',
       [
         {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
         {text: 'OK', onPress: () => {
+          console.log('dispatching')
           this.props.dispatch({
             type: 'events/acceptInvitation',
             payload: { event_id: item.id, user_id: user },
